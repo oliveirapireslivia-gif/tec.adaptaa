@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TecAdapta — Tecnologia Assistiva e Acessibilidade</title>
+  <style>
+    :root {
+      --scale: 1;
+      --line: 1.6;
+      --spacing: .015em;
+      --bg: #f3f8fa;
+      --surface: #fff;
+      --text: #073e50;
+      --muted: #365662;
+      --accent: #086d92;
+      --accent-soft: #e3f2f7;
+      --border: #b3cbd3;
+      --focus: #a04400;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: calc(16px * var(--scale));
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      line-height: var(--line);
+      letter-spacing: var(--spacing);
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    a:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 3px;
+    }
+
+    .wrap {
+      width: min(1100px, 92%);
+      margin: auto;
+    }
+
+    .skip {
+      position: absolute;
+      left: -9999px;
+    }
+
+    .skip:focus {
+      left: 10px;
+      top: 10px;
+      background: white;
+      padding: 10px;
+      z-index: 100;
+    }
+
+    .canva-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 0;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .brand-text-name {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .brand-text-tagline {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .canva-menu ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .canva-menu a {
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .hero {
+      padding: 65px 0;
+      text-align: center;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.15;
+      max-width: 800px;
+      margin: 15px auto;
+    }
+
+    .lead {
+      max-width: 700px;
+      margin: auto;
+      font-size: 1.15rem;
+      color: var(--muted);
+    }
+
+    .section {
+      margin: 35px 0;
+      padding: 30px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 0;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+    }
+
+    .section-intro {
+      color: var(--muted);
+      max-width: 800px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    input:not([type="checkbox"]),
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: white;
+      color: #073e50;
+    }
+
+    .register-grid,
+    .filters,
+    .control-grid,
+    .examples {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .filters {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .control-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .register-field {
+      margin: 20px 0;
+    }
+
+    .privacy,
+    .hint {
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .check-row label {
+      font-weight: normal;
+    }
+
+    .field-error {
+      color: #a00000;
+      font-size: .9rem;
+    }
+
+    .btn {
+      border: 1px solid var(--accent);
+      background: white;
+      color: var(--accent);
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 4px;
+    }
+
+    .btn:hover {
+      background: var(--accent-soft);
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn.restore {
+      background: var(--accent-soft);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .register-status {
+      font-weight: bold;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .card,
+    .example {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+    }
+
+    .category {
+      display: inline-block;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: .85rem;
+      font-weight: bold;
+    }
+
+    .card dl div {
+      margin: 12px 0;
+    }
+
+    .card dt {
+      font-weight: bold;
+      display: inline;
+    }
+
+    .card dd {
+      display: inline;
+      margin: 0;
+    }
+
+    .steps-title {
+      font-weight: bold;
+    }
+
+    .card ol {
+      padding-left: 22px;
+    }
+
+    .empty {
+      background: var(--accent-soft);
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .symbol-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .symbol {
+      background: var(--accent-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px 5px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .symbol span {
+      display: block;
+      font-size: 2rem;
+      margin-bottom: 5px;
+    }
+
+    .notice {
+      background: var(--accent-soft);
+      border-radius: 15px;
+      padding: 30px;
+    }
+
+    .canva-footer {
+      background: var(--text);
+      color: white;
+      padding: 25px 0;
+      margin-top: 50px;
+    }
+
+    .canva-footer a {
+      color: white;
+    }
+
+    body.simple .card,
+    body.simple .example {
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    body.no-motion *,
+    body.no-motion *::before,
+    body.no-motion *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+
+    @media (max-width: 750px) {
+      .register-grid,
+      .filters,
+      .control-grid,
+      .examples,
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .canva-menu ul {
+        gap: 12px;
+      }
+
+      .section {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 450px) {
+      .symbol-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body id="inicio">
+
+  <a class="skip" href="#conteudo">
+    Pular para o conteúdo principal
+  </a>
+
+  <header class="canva-header">
+    <div class="wrap topbar">
+
+      <div class="brand-text">
+        <span class="brand-text-name">TecAdapta</span>
+        <span class="brand-text-tagline">
+          Tecnologia Assistiva e Acessibilidade
+        </span>
+      </div>
+
+      <nav class="canva-menu" aria-label="Navegação principal">
+        <ul>
+          <li><a href="#cadastro">Cadastro</a></li>
+          <li><a href="#ajustes">Ajustes de leitura</a></li>
+          <li><a href="#catalogo">Catálogo</a></li>
+          <li><a href="#comunicacao">Comunicação</a></li>
+          <li><a href="#orientacao">Orientações</a></li>
+        </ul>
+      </nav>
+
+    </div>
+  </header>
+
+  <main id="conteudo" class="wrap" tabindex="-1">
+
+    <section class="hero">
+      <p class="eyebrow">
+        Tecnologia assistiva, explicada de forma simples
+      </p>
+
+      <h1>Encontre recursos que ajudam no dia a dia</h1>
+
+      <p class="lead">
+        Explore soluções para acessar conteúdos digitais,
+        organizar tarefas e se comunicar. Cada recurso inclui
+        uma explicação e passos para começar.
+      </p>
+    </section>
+
+    <section id="cadastro" class="section panel">
+      <p class="eyebrow">Um primeiro passo, com calma</p>
+
+      <h2>Cadastro de interesse</h2>
+
+      <p class="section-intro">
+        Informe apenas os dados abaixo. Campos marcados com *
+        são obrigatórios. Não informe documentos, diagnósticos
+        ou informações médicas.
+      </p>
+
+      <form id="cadastro-form" novalidate>
+
+        <div class="register-grid">
+          <div>
+            <label for="responsavel">Nome do responsável *</label>
+            <input id="responsavel" name="responsavel" required>
+            <p id="responsavel-erro" class="field-error"></p>
+          </div>
+
+          <div>
+            <label for="crianca">Nome da criança *</label>
+            <input id="crianca" name="crianca" required>
+            <p id="crianca-erro" class="field-error"></p>
+          </div>
+        </div>
+
+        <p class="privacy">
+          Privacidade: o nome da criança será usado somente
+          para registrar este interesse. Não inclua CPF ou
+          informações de saúde neste cadastro.
+        </p>
+
+        <div class="register-field">
+          <label for="apoio">Qual a deficiência da criança? *</label>
+
+          <select id="apoio" required>
+            <option value="">Selecione uma opção</option>
+            <option>Dislexia</option>
+            <option>Autismo</option>
+            <option>TDAH - Transtorno de déficit de atenção e hiperatividade</option>
+            <option>Síndrome de Down</option>
+            <option>Outros</option>
+          </select>
+
+          <p class="hint">
+            As necessidades variam entre pessoas. Escolha o tipo
+            de recurso que deseja explorar, sem precisar indicar
+            diagnóstico ou grau de deficiência.
+          </p>
+
+          <p id="apoio-erro" class="field-error"></p>
+        </div>
+
+        <div class="check-row">
+          <input id="consentimento" type="checkbox" required>
+          <label for="consentimento">
+            Concordo com o registro destes dados para este
+            cadastro de interesse. *
+          </label>
+        </div>
+
+        <p id="consentimento-erro" class="field-error"></p>
+
+        <button class="btn primary" type="submit">
+          Enviar cadastro de interesse
+        </button>
+
+        <p id="cadastro-status" class="register-status"
+           role="status" aria-live="polite"></p>
+
+      </form>
+
+      <a href="#inicio">Voltar à página inicial</a>
+    </section>
+
+    <section id="ajustes" class="section panel">
+      <h2>Ajustes de leitura</h2>
+
+      <p class="section-intro">
+        Escolha como prefere ver esta página.
+        Os botões mostram quando uma opção está ativada.
+      </p>
+
+      <div class="control-grid">
+
+        <div class="control-group">
+          <h3>Tamanho do texto</h3>
+          <div class="button-row">
+            <button id="texto-menor" class="btn" type="button">
+              A− Reduzir
+            </button>
+
+            <button id="texto-maior" class="btn" type="button">
+              A+ Aumentar
+            </button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <h3>Espaçamento</h3>
+          <div class="button-row">
+            <button id="linhas" class="btn" type="button"
+                    aria-pressed="false">
+              Entre linhas
+            </button>
+
+            <button id="letras" class="btn" type="button"
+                    aria-pressed="false">
+              Entre letras
+            </button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <h3>Visualização</h3>
+          <div class="button-row">
+            <button id="contraste" class="btn" type="button"
+                    aria-pressed="false">
+              Alto contraste
+            </button>
+
+            <button id="movimento" class="btn" type="button"
+                    aria-pressed="false">
+              Sem animações
+            </button>
+
+            <button id="simples" class="btn" type="button"
+                    aria-pressed="false">
+              Visão simples
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <button id="restaurar" class="btn restore" type="button">
+        Restaurar visualização padrão
+      </button>
+
+      <p id="ajustes-status" class="hint" role="status"
+         aria-live="polite">
+        Visualização padrão.
+      </p>
+    </section>
+
+    <section id="catalogo" class="section">
+      <h2>Catálogo de soluções</h2>
+
+      <p class="section-intro">
+        Digite um termo ou selecione filtros.
+        Você pode usar apenas um filtro ou combinar vários.
+      </p>
+
+      <div class="filters">
+        <div>
+          <label for="busca">Buscar recursos</label>
+          <input id="busca" type="search"
+                 placeholder="Ex.: leitura, rotina, fala">
+          <p class="hint">
+            A busca procura nomes, descrições e públicos indicados.
+          </p>
+        </div>
+
+        <div>
+          <label for="necessidade">Necessidade</label>
+          <select id="necessidade">
+            <option value="todas">Todas as necessidades</option>
+            <option value="visual">Deficiência visual</option>
+            <option value="autismo">Autismo</option>
+            <option value="tdah">TDAH</option>
+            <option value="dislexia">Dislexia</option>
+            <option value="down">Síndrome de Down</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="tipo">Tipo de recurso</label>
+          <select id="tipo">
+            <option value="todos">Todos os tipos</option>
+            <option value="digital">Acessibilidade digital</option>
+            <option value="organizacao">Organização e apoio cognitivo</option>
+            <option value="comunicacao">Comunicação assistiva</option>
+          </select>
+        </div>
+      </div>
+
+      <p id="resultado" role="status" aria-live="polite"></p>
+
+      <div id="cartoes" class="cards"></div>
+
+      <div id="sem-resultados" class="empty" hidden>
+        <h3>Nenhum recurso encontrado</h3>
+        <p>
+          Tente outro termo ou escolha “Todas as necessidades”
+          e “Todos os tipos”.
+        </p>
+
+        <button id="limpar-filtros" class="btn" type="button">
+          Limpar busca e filtros
+        </button>
+      </div>
+    </section>
+
+    <section id="comunicacao" class="section">
+      <h2>Exemplos de comunicação alternativa</h2>
+
+      <p class="section-intro">
+        Uma prancha reúne palavras ou símbolos para ajudar alguém
+        a expressar escolhas e necessidades. Os símbolos abaixo
+        são exemplos visuais; cada um também tem seu significado escrito.
+      </p>
+
+      <div class="examples">
+
+        <article class="example">
+          <h3>Prancha de necessidades básicas</h3>
+
+          <div class="symbol-grid">
+            <div class="symbol"><span>💧</span>Água</div>
+            <div class="symbol"><span>🍽️</span>Comida</div>
+            <div class="symbol"><span>🚻</span>Banheiro</div>
+            <div class="symbol"><span>✋</span>Pausa</div>
+          </div>
+
+          <p>
+            <strong>Como usar:</strong> a pessoa aponta, olha ou
+            indica uma opção. Outra pessoa confirma a escolha em
+            voz alta, se necessário.
+          </p>
+        </article>
+
+        <article class="example">
+          <h3>Prancha de escolhas e respostas</h3>
+
+          <div class="symbol-grid">
+            <div class="symbol"><span>✓</span>Sim</div>
+            <div class="symbol"><span>✕</span>Não</div>
+            <div class="symbol"><span>?</span>Ajuda</div>
+            <div class="symbol"><span>↩</span>Outra opção</div>
+          </div>
+
+          <p>
+            <strong>Como usar:</strong> faça uma pergunta de cada
+            vez e dê tempo para a resposta. Use palavras e símbolos
+            familiares à pessoa.
+          </p>
+        </article>
+
+      </div>
+    </section>
+
+    <section id="orientacao" class="section notice">
+      <h2>Cada pessoa tem necessidades diferentes</h2>
+
+      <p>
+        Um recurso útil para uma pessoa pode não funcionar para
+        outra. Teste as opções com calma, pergunte as preferências
+        da pessoa e ajuste o modo de uso quando necessário.
+      </p>
+
+      <p>
+        <strong>Importante:</strong> este catálogo oferece
+        informações gerais. Ele não substitui uma avaliação
+        de profissionais de saúde, educação ou tecnologia assistiva.
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="canva-footer">
+    <div class="wrap">
+      <p>
+        <strong>TecAdapta</strong> —
+        Informação clara para escolhas mais acessíveis.
+      </p>
+
+      <a href="#inicio">Voltar ao início</a>
+    </div>
+  </footer>
+
+  <script>
+    const solutions = [
+      {
+        name: "Leitor de tela",
+        type: "digital",
+        category: "Acessibilidade digital",
+        needs: ["visual"],
+        purpose: "Lê em voz alta textos, botões e outros elementos da tela.",
+        audience: "Pessoas com deficiência visual ou que preferem ouvir o conteúdo.",
+        level: "Intermediário",
+        steps: [
+          "Ative o leitor de tela nas configurações do aparelho.",
+          "Use Tab e as setas para explorar os elementos.",
+          "Ouça o nome de cada botão antes de acioná-lo."
+        ]
+      },
+      {
+        name: "Ampliação e zoom",
+        type: "digital",
+        category: "Acessibilidade digital",
+        needs: ["visual", "dislexia", "down"],
+        purpose: "Aumenta letras e elementos para facilitar a leitura.",
+        audience: "Pessoas com baixa visão ou que leem melhor com texto maior.",
+        level: "Básico",
+        steps: [
+          "Abra as opções de acessibilidade do aparelho ou do navegador.",
+          "Aumente o zoom aos poucos.",
+          "Escolha um tamanho confortável, sem perder conteúdo da tela."
+        ]
+      },
+      {
+        name: "Leitura em voz alta",
+        type: "digital",
+        category: "Acessibilidade digital",
+        needs: ["visual", "dislexia", "tdah"],
+        purpose: "Transforma texto digital em fala para acompanhar uma leitura.",
+        audience: "Pessoas com dislexia, deficiência visual ou dificuldade de concentração.",
+        level: "Básico",
+        steps: [
+          "Selecione um texto em um aplicativo compatível.",
+          "Acione a opção de leitura em voz alta.",
+          "Ajuste a velocidade para acompanhar com conforto."
+        ]
+      },
+      {
+        name: "Modo de leitura sem distrações",
+        type: "digital",
+        category: "Acessibilidade digital",
+        needs: ["autismo", "tdah", "dislexia"],
+        purpose: "Mostra o texto principal com menos elementos ao redor.",
+        audience: "Pessoas com TDAH, dislexia ou sensibilidade a excesso de informação.",
+        level: "Básico",
+        steps: [
+          "Abra uma página com texto no navegador.",
+          "Procure a opção “Modo de leitura”.",
+          "Ajuste o tamanho do texto e leia uma parte por vez."
+        ]
+      },
+      {
+        name: "Agenda visual de rotina",
+        type: "organizacao",
+        category: "Organização e apoio cognitivo",
+        needs: ["autismo", "tdah", "down"],
+        purpose: "Organiza atividades em uma sequência de palavras e imagens.",
+        audience: "Pessoas que se beneficiam de uma rotina visível e previsível.",
+        level: "Básico",
+        steps: [
+          "Liste poucas atividades para um período do dia.",
+          "Coloque as atividades na ordem em que acontecerão.",
+          "Marque cada atividade concluída e avise sobre mudanças."
+        ]
+      },
+      {
+        name: "Lista de tarefas em etapas",
+        type: "organizacao",
+        category: "Organização e apoio cognitivo",
+        needs: ["tdah", "autismo", "down", "dislexia"],
+        purpose: "Divide uma atividade grande em passos curtos e concretos.",
+        audience: "Pessoas que precisam acompanhar o que já fizeram e o que falta.",
+        level: "Básico",
+        steps: [
+          "Escreva uma ação simples por linha.",
+          "Faça uma etapa de cada vez.",
+          "Marque as etapas concluídas e revise o próximo passo."
+        ]
+      },
+      {
+        name: "Lembretes por notificação",
+        type: "organizacao",
+        category: "Organização e apoio cognitivo",
+        needs: ["tdah", "autismo", "down"],
+        purpose: "Mostra avisos para compromissos e atividades planejadas.",
+        audience: "Pessoas que querem apoio para lembrar tarefas do dia.",
+        level: "Básico",
+        steps: [
+          "Crie um lembrete com nome claro e horário adequado.",
+          "Escolha um aviso discreto, se preferir.",
+          "Ao receber o aviso, confira a tarefa antes de dispensá-lo."
+        ]
+      },
+      {
+        name: "Prancha de comunicação",
+        type: "comunicacao",
+        category: "Comunicação assistiva",
+        needs: ["autismo", "down"],
+        purpose: "Oferece palavras e símbolos para expressar necessidades e escolhas.",
+        audience: "Pessoas que se comunicam melhor apontando símbolos ou palavras.",
+        level: "Básico",
+        steps: [
+          "Escolha palavras úteis no cotidiano da pessoa.",
+          "Organize poucos símbolos por página e inclua texto.",
+          "Deixe a prancha acessível e dê tempo para a pessoa responder."
+        ]
+      },
+      {
+        name: "Aplicativo de fala por seleção",
+        type: "comunicacao",
+        category: "Comunicação assistiva",
+        needs: ["autismo", "down", "visual"],
+        purpose: "Fala uma palavra ou frase selecionada na tela.",
+        audience: "Pessoas que usam comunicação alternativa; a acessibilidade visual depende do aplicativo escolhido.",
+        level: "Intermediário",
+        steps: [
+          "Configure palavras e frases importantes para a pessoa.",
+          "Teste se os botões são fáceis de localizar e selecionar.",
+          "Selecione uma opção e confira se a fala corresponde à intenção."
+        ]
+      }
+    ];
+
+    const cards = document.getElementById("cartoes");
+    const search = document.getElementById("busca");
+    const need = document.getElementById("necessidade");
+    const type = document.getElementById("tipo");
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, c => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[c]));
+    }
+
+    function normalize(value) {
+      return value.normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    }
+
+    function render() {
+      const query = normalize(search.value.trim());
+
+      const shown = solutions.filter(s =>
+        (need.value === "todas" || s.needs.includes(need.value)) &&
+        (type.value === "todos" || s.type === type.value) &&
+        (!query || normalize([
+          s.name,
+          s.category,
+          s.purpose,
+          s.audience,
+          s.level,
+          ...s.steps
+        ].join(" ")).includes(query))
+      );
+
+      cards.innerHTML = shown.map(s => `
+        <article class="card">
+          <span class="category">${escapeHTML(s.category)}</span>
+          <h3>${escapeHTML(s.name)}</h3>
+
+          <dl>
+            <div>
+              <dt>Finalidade: </dt>
+              <dd>${escapeHTML(s.purpose)}</dd>
+            </div>
+
+            <div>
+              <dt>Público indicado: </dt>
+              <dd>${escapeHTML(s.audience)}</dd>
+            </div>
+
+            <div>
+              <dt>Complexidade: </dt>
+              <dd>${escapeHTML(s.level)}</dd>
+            </div>
+          </dl>
+
+          <p class="steps-title">Como começar</p>
+
+          <ol>
+            ${s.steps.map(step =>
+              `<li>${escapeHTML(step)}</li>`
+            ).join("")}
+          </ol>
+        </article>
+      `).join("");
+
+      document.getElementById("resultado").textContent =
+        `${shown.length} ${
+          shown.length === 1
+            ? "recurso encontrado"
+            : "recursos encontrados"
+        }.`;
+
+      document.getElementById("sem-resultados").hidden =
+        shown.length !== 0;
+    }
+
+    [search, need, type].forEach(el =>
+      el.addEventListener(
+        el === search ? "input" : "change",
+        render
+      )
+    );
+
+    document.getElementById("limpar-filtros")
+      .addEventListener("click", () => {
+        search.value = "";
+        need.value = "todas";
+        type.value = "todos";
+        render();
+        search.focus();
+      });
+
+    let scale = 1;
+    let wideLines = false;
+    let wideLetters = false;
+    let contrast = false;
+    let noMotion = false;
+    let simple = false;
+
+    const root = document.documentElement;
+    const status = document.getElementById("ajustes-status");
+
+    function toggle(id, value) {
+      document.getElementById(id)
+        .setAttribute("aria-pressed", String(value));
+    }
+
+    function update(message) {
+      root.style.setProperty("--scale", scale);
+      root.style.setProperty("--line", wideLines ? "1.95" : "1.6");
+      root.style.setProperty("--spacing", wideLetters ? ".075em" : ".015em");
+      root.style.setProperty("--bg", contrast ? "#000" : "#f3f8fa");
+      root.style.setProperty("--surface", contrast ? "#101010" : "#fff");
+      root.style.setProperty("--text", contrast ? "#fff" : "#073e50");
+      root.style.setProperty("--muted", contrast ? "#fff" : "#365662");
+      root.style.setProperty("--accent", contrast ? "#ffdf66" : "#086d92");
+      root.style.setProperty("--accent-soft", contrast ? "#303030" : "#e3f2f7");
+      root.style.setProperty("--border", contrast ? "#fff" : "#b3cbd3");
+      root.style.setProperty("--focus", contrast ? "#ffdf66" : "#a04400");
+
+      document.body.classList.toggle("simple", simple);
+      document.body.classList.toggle("no-motion", noMotion);
+
+      ["linhas", "letras", "contraste", "movimento", "simples"]
+        .forEach((id, i) =>
+          toggle(id, [
+            wideLines,
+            wideLetters,
+            contrast,
+            noMotion,
+            simple
+          ][i])
+        );
+
+      status.textContent = message;
+    }
+
+    document.getElementById("texto-menor")
+      .addEventListener("click", () => {
+        scale = Math.max(.85, Math.round((scale - .1) * 100) / 100);
+        update(`Texto em ${Math.round(scale * 100)}% do tamanho padrão.`);
+      });
+
+    document.getElementById("texto-maior")
+      .addEventListener("click", () => {
+        scale = Math.min(1.5, Math.round((scale + .1) * 100) / 100);
+        update(`Texto em ${Math.round(scale * 100)}% do tamanho padrão.`);
+      });
+
+    document.getElementById("linhas")
+      .addEventListener("click", () => {
+        wideLines = !wideLines;
+        update(`Espaçamento entre linhas ${wideLines ? "ativado" : "desativado"}.`);
+      });
+
+    document.getElementById("letras")
+      .addEventListener("click", () => {
+        wideLetters = !wideLetters;
+        update(`Espaçamento entre letras ${wideLetters ? "ativado" : "desativado"}.`);
+      });
+
+    document.getElementById("contraste")
+      .addEventListener("click", () => {
+        contrast = !contrast;
+        update(`Alto contraste ${contrast ? "ativado" : "desativado"}.`);
+      });
+
+    document.getElementById("movimento")
+      .addEventListener("click", () => {
+        noMotion = !noMotion;
+        update(`Opção sem animações ${noMotion ? "ativada" : "desativada"}.`);
+      });
+
+    document.getElementById("simples")
+      .addEventListener("click", () => {
+        simple = !simple;
+        update(`Visualização simples ${simple ? "ativada" : "desativada"}.`);
+      });
+
+    document.getElementById("restaurar")
+      .addEventListener("click", () => {
+        scale = 1;
+        wideLines = false;
+        wideLetters = false;
+        contrast = false;
+        noMotion = false;
+        simple = false;
+        update("Visualização padrão restaurada.");
+      });
+
+    render();
+
+    const cadastroForm = document.getElementById("cadastro-form");
+    const cadastroStatus = document.getElementById("cadastro-status");
+
+    cadastroForm.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const fields = [
+        ["responsavel", "Informe o nome do responsável."],
+        ["crianca", "Informe o nome da criança."],
+        ["apoio", "Selecione um tipo de apoio."],
+        ["consentimento", "Marque a caixa para concordar com o cadastro."]
+      ];
+
+      let firstInvalid = null;
+
+      for (const [id, message] of fields) {
+        const input = document.getElementById(id);
+
+        const invalid = id === "consentimento"
+          ? !input.checked
+          : !input.value.trim();
+
+        input.setAttribute("aria-invalid", String(invalid));
+
+        const error = document.getElementById(id + "-erro");
+        error.textContent = invalid ? message : "";
+
+        if (invalid && !firstInvalid) {
+          firstInvalid = input;
+        }
+      }
+
+      if (firstInvalid) {
+        cadastroStatus.textContent =
+          "Revise os campos indicados abaixo.";
+        firstInvalid.focus();
+        return;
+      }
+
+      cadastroStatus.textContent =
+        "Formulário preenchido. Para receber cadastros, é necessário conectar um serviço de armazenamento.";
+
+    });
+  </script>
+
+</body>
+</html>
